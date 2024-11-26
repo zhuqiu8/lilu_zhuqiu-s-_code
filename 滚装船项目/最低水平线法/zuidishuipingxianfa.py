@@ -40,7 +40,7 @@ class RectLayout:
         self.line_list.append(OutLine(origin, end, height))
 
     # 提升最低水平线
-    def enhance_line(self, index):
+    def enhance_line(self, index, max_height=450):
         if len(self.line_list) > 1:
             # 获取高度较低的相邻水平线索引，并更新水平线集
             neighbor_idx = 0
@@ -65,6 +65,14 @@ class RectLayout:
                     neighbor_idx = index + 1
             # 选中的高度较低的相邻水平线
             old = self.line_list[neighbor_idx]
+
+            #增加水平线的高度约束，即为堆场的长度约束
+            new_height = max(self.line_list[index].height, old.height)
+
+            # 如果超过高度限制，停止提升
+            if new_height > max_height:
+                print(f"Cannot enhance line at index {index}, height limit reached.")
+                return False
             # 更新相邻水平线
             if neighbor_idx < index:
                 self.line_list[neighbor_idx] = OutLine(old.origin, old.end + self.line_width(index), old.height)
@@ -114,15 +122,21 @@ class RectLayout:
 
 # 主方法
 if __name__ == "__main__":
-    # 板材宽度
-    container_width = 10
+    #堆场的高度
+    max_height = 450  # 根据需求调整
+    # 堆场的宽度
+    container_width = 32
     # 矩形物品数量
-    item_num = 25
+    item_num = 718+327+100
     # 初始化矩形物品尺寸，也可以随机生成
-    # item_sizes = np.random.randint(1, 8, size=(item_num, 2)).tolist()
-    item_sizes = [[3, 1], [4, 4], [1, 1], [2, 3], [2, 4], [3, 4], [1, 4], [2, 2], [3, 3], [3, 1], [4, 2], [3, 1],
-                  [3, 1], [3, 2], [4, 2], [1, 2], [1, 3], [3, 4], [2, 3], [1, 1], [2, 1], [3, 2], [4, 3], [3, 2],
-                  [4, 3]]
+    # item_sizes = [[3, 1], [4, 4], [1, 1], [2, 3], [2, 4], [3, 4], [1, 4], [2, 2], [3, 3], [3, 1], [4, 2], [3, 1],
+    #               [3, 1], [3, 2], [4, 2], [1, 2], [1, 3], [3, 4], [2, 3], [1, 1], [2, 1], [3, 2], [4, 3], [3, 2],
+    #               [4, 3]]
+    item_sizes = [[4.5,2.2]] *  718 +  [[5,2.2]]*327 + [[4.5 , 2.2]] *100
+
+
+
+
     # 按面积对矩形物品尺寸排序
     _item_sizes = sorted(item_sizes, key=lambda x: x[0] * x[1], reverse=True)
     print(_item_sizes)
@@ -161,8 +175,11 @@ if __name__ == "__main__":
             # 剔除已经排样的物品
             _products.pop(0)
         else:
-            # 最低水平线宽度小于要排样矩形宽度，提升最低水平线
-            layout.enhance_line(lowest_idx)
+            # 如果无法直接放置，尝试提升线。如果无法提升，跳过当前矩形。
+            if not layout.enhance_line(lowest_idx, max_height):
+                print(f"Skipping product {pro.num}, cannot fit within height limit.")
+                _products.pop(0)
+                
     # 计算最大排样高度
     container_height = layout.cal_high_line()
     # 计算板材利用率
@@ -197,6 +214,7 @@ if __name__ == "__main__":
         # 物品编号
         ax.text(pos[1] + pro.w / 2, pos[2] + pro.h / 2, "{}".format(pos[0]), transform=ax.transData)
 
-    # plt.show()
-    plt.savefig('lowest_horizontal_line.png', dpi=800)
+    plt.show()
+    plt.savefig('./lowest_horizontal_line.png', dpi=800)
+
 
