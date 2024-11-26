@@ -1,6 +1,7 @@
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.cm as cm
 
 
 # 水平线类（起始x位置，终止x位置，高度）
@@ -191,7 +192,7 @@ if __name__ == "__main__":
     print("ratio: {}%".format(round((used_area * 100) / (container_width * container_height), 3)))
 
     # 绘制排样布局
-    fig = plt.figure()
+    fig = plt.figure(figsize=(container_width / 5, container_height / 5))
     plt.xlim(0, container_width)
     plt.ylim(0, container_height)
     plt.axis("off")
@@ -199,22 +200,26 @@ if __name__ == "__main__":
     ax.set_xlim(0, container_width)
     ax.set_ylim(0, container_height)
 
-    for pos in result_pos:
+    # 使用颜色映射
+    cmap = cm.get_cmap('tab20', len(result_pos))
+    for idx, pos in enumerate(result_pos):
         pro = Product.by_num(pos[0], products)
         ax.add_patch(
             plt.Rectangle(
-                (pos[1], pos[2]),  # 矩形左下角
-                pro.w,  # 长
-                pro.h,  # 宽
-                alpha=1,
+                (pos[1], pos[2]),
+                pro.w,
+                pro.h,
+                color=cmap(idx),
+                alpha=0.7,  # 半透明
                 edgecolor='black',
-                linewidth=1
+                linewidth=0.5
             )
         )
-        # 物品编号
-        ax.text(pos[1] + pro.w / 2, pos[2] + pro.h / 2, "{}".format(pos[0]), transform=ax.transData)
+        # 显示部分编号
+        if pos[0] % 100 == 0:  # 每隔 100 个矩形显示一个编号
+            ax.text(pos[1] + pro.w / 2, pos[2] + pro.h / 2, "{}".format(pos[0]), fontsize=5, ha='center')
 
-    plt.show()
-    plt.savefig('./lowest_horizontal_line.png', dpi=800)
+
+    plt.savefig('./lowest_horizontal_line.png', dpi=900)
 
 
