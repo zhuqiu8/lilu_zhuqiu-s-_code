@@ -6,8 +6,7 @@ from zuidishuipingxianfa import __init__
 from zuidishuipingxianfa import Product
 from zuidishuipingxianfa import RectLayout
 from zuidishuipingxianfa import OutLine
-from item import item_num , item_sizes, max_height, container_width
-
+from item import *
 
 def layout_items(item_sizes, item_num, container_width, max_height):
 
@@ -98,7 +97,7 @@ def layout_items(item_sizes, item_num, container_width, max_height):
             ax.text(pos[1] + pro.w / 2, pos[2] + pro.h / 2, "{}".format(pos[0]), fontsize=5, ha='center')
 
      # 保存图片
-    output_file = './lowest_horizontal_line.png'
-    plt.savefig(output_file, dpi=900)
+    # output_file = './lowest_horizontal_line.png'     
+    # plt.savefig(output_file, dpi=900)
 
-    return container_height, utilization, output_file
+    return container_height, utilization   #, output_file
