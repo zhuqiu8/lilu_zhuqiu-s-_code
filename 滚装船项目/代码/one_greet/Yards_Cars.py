@@ -1,4 +1,7 @@
 import numpy as np
+from collections import defaultdict
+from Max_rectangles  import *
+
 
 '''
 yards ：堆场面积集合
@@ -20,8 +23,6 @@ yards = {'C1_1': np.array([9.2, 200]),      # 1区
         #'G1':np.array([]),                 # 10区
          'Q1': np.array([14, 200])   # 11区
          }
-
-
 
 #car = [宽， 长， 数量]
 cars  = {
@@ -55,9 +56,59 @@ cars  = {
 
 }
 
+# 分组车辆数据（按品牌）
+brand_groups = defaultdict(list)
+for car, specs in cars.items():
+    brand = car.split('_')[0]  # 提取品牌名，通过字符串_分割
+    brand_groups[brand].append(specs)
 
-def Yard(yards,cars):
-    n=len(yards)
-    for i in yards:
-        S(i) = 
-        for j in  cars:
+# 将所有品牌数据转为矩形格式
+def all_brands_to_rectangles(brand_groups):
+    all_rectangles = {}
+    for brand, vehicles in brand_groups.items():
+        # 将每个车型转换成 (宽度, 长度, 数量) 格式
+        all_rectangles[brand] = {car: (spec[0], spec[1], spec[2]) for car, spec in zip(brand, vehicles)}
+    return all_rectangles
+# 将所有品牌数据转为矩形格式
+# def all_brands_to_rectangles(brand_groups):
+#     all_rectangles = {}
+#     for brand, vehicles in brand_groups.items():
+#         # 将每个车型转换成 (宽度, 长度, 数量) 格式
+#         all_rectangles[brand] = {f"{brand}_{i}": (spec[0], spec[1], spec[2]) for i, spec in enumerate(vehicles)}
+#     return all_rectangles
+
+
+# 转换所有品牌车辆信息
+all_rectangles = all_brands_to_rectangles(brand_groups)
+
+# 计算每个堆场排放车辆的数量及放置方案
+def Calculate_all_emission_scenarios(all_rectangles, yards):
+    results = {}
+    for key, value in yards.items():  # 遍历堆场
+        W, H = value
+        print(f"堆场: {key}, 宽度 W={W}, 高度 H={H}")
+        results[key] = {}
+
+        for brand, cars_data in all_rectangles.items():  # 遍历品牌
+            print(f"  品牌: {brand}")
+
+            for car, data in cars_data.items():  # 遍历每个品牌下的车型
+                width, length, count = data  # 获取宽度、长度和数量
+                rectangles = {(width, length): count}  # 转换为字典格式
+                max_count, placement_plan = max_rectangles(W, H, rectangles)
+
+                print("    最大可放置数量：", max_count)
+                print("    放置方案：")
+                for x, y, rw, rh in placement_plan:
+                    print(f"      小矩形放置在位置 ({x}, {y})，尺寸为 {rw} x {rh}")
+
+                if brand not in results[key]:
+                    results[key][brand] = {}
+
+                results[key][brand][car] = {
+                    "max_count": max_count,
+                    "placement_plan": placement_plan
+                }
+
+    return results
+
