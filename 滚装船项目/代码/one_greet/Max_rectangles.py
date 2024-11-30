@@ -67,12 +67,20 @@ def max_rectangles(W, H, rectangles):
         placement: list - 放置方案 [(x, y, w, h)]，每个元组表示一个车的位置和尺寸
     """
 
-    W =  int(W)
+    W = int(W)
     H = int(H)
 
     # 初始化 DP 表和方案记录
     dp = [[0] * (H + 1) for _ in range(W + 1)]
     placement = [[[] for _ in range(H + 1)] for _ in range(W + 1)]
+
+    def is_overlapping(new_rect, placed_rects):
+        """检查新矩形是否与已放置的矩形重叠"""
+        nx, ny, nw, nh = new_rect
+        for x, y, w, h in placed_rects:
+            if not (nx + nw <= x or nx >= x + w or ny + nh <= y or ny >= y + h):
+                return True
+        return False
 
     # 遍历每一个状态
     for w in range(1, W + 1):
@@ -82,37 +90,29 @@ def max_rectangles(W, H, rectangles):
                 rw, rh = rect  # 小矩形的宽和高
                 # 不旋转放置
                 if rw <= w and rh <= h and count > 0:
-                    new_count = 1 + dp[w - rw][h] + dp[w][h - rh]
-                    if new_count > dp[w][h]:
-                        # 检查是否能满足数量约束
-                        used_count = (
-                            sum(1 for x, y, pw, ph in placement[w - rw][h] if (pw, ph) == rect) +
-                            sum(1 for x, y, pw, ph in placement[w][h - rh] if (pw, ph) == rect)
-                        )
-                        if used_count + 1 <= count:
+                    new_rect = (w - rw, h - rh, rw, rh)
+                    if not is_overlapping(new_rect, placement[w][h]):
+                        new_count = 1 + dp[w - rw][h] + dp[w][h - rh]
+                        if new_count > dp[w][h]:
                             dp[w][h] = new_count
                             # 更新方案：当前位置放置 rw x rh 的矩形
                             placement[w][h] = (
-                                [(0, 0, rw, rh)] +
-                                [(x + rw, y, pw, ph) for x, y, pw, ph in placement[w - rw][h]] +
-                                [(x, y + rh, pw, ph) for x, y, pw, ph in placement[w][h - rh]]
+                                [(w - rw, h - rh, rw, rh)] +
+                                [(x, y, pw, ph) for x, y, pw, ph in placement[w - rw][h]] +
+                                [(x, y, pw, ph) for x, y, pw, ph in placement[w][h - rh]]
                             )
                 # 旋转放置
                 if rh <= w and rw <= h and count > 0:
-                    new_count = 1 + dp[w - rh][h] + dp[w][h - rw]
-                    if new_count > dp[w][h]:
-                        # 检查是否能满足数量约束
-                        used_count = (
-                            sum(1 for x, y, pw, ph in placement[w - rh][h] if (ph, pw) == rect) +
-                            sum(1 for x, y, pw, ph in placement[w][h - rw] if (ph, pw) == rect)
-                        )
-                        if used_count + 1 <= count:
+                    new_rect = (w - rh, h - rw, rh, rw)
+                    if not is_overlapping(new_rect, placement[w][h]):
+                        new_count = 1 + dp[w - rh][h] + dp[w][h - rw]
+                        if new_count > dp[w][h]:
                             dp[w][h] = new_count
                             # 更新方案：当前位置放置 rh x rw 的矩形（旋转）
                             placement[w][h] = (
-                                [(0, 0, rh, rw)] +
-                                [(x + rh, y, pw, ph) for x, y, pw, ph in placement[w - rh][h]] +
-                                [(x, y + rw, pw, ph) for x, y, pw, ph in placement[w][h - rw]]
+                                [(w - rh, h - rw, rh, rw)] +
+                                [(x, y, pw, ph) for x, y, pw, ph in placement[w - rh][h]] +
+                                [(x, y, pw, ph) for x, y, pw, ph in placement[w][h - rw]]
                             )
 
     # 返回最大数量和具体方案
