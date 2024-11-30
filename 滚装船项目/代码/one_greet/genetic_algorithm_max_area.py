@@ -1,23 +1,8 @@
 import random
 
-def genetic_algorithm_max_rectangles(W, H, rectangles, max_generations=100, population_size=50, mutation_rate=0.1):
-    """
-    遗传算法求解二维矩形装箱问题
-
-    参数：
-        W: int - 大矩形的宽度
-        H: int - 大矩形的高度
-        rectangles: dict - 小矩形集合 { (w1, h1): count1, (w2, h2): count2, ... }
-        max_generations: int - 最大代数
-        population_size: int - 种群规模
-        mutation_rate: float - 变异率
-
-    返回：
-        best_solution: list - 最佳放置方案 [(x, y, w, h)]
-        best_fitness: int - 对应的最大矩形数量
-    """
+def genetic_algorithm_max_area(W, H, rectangles, max_generations=100, population_size=50, mutation_rate=0.1):
     def create_individual():
-        """随机生成个体"""
+        """随机生成个体，同时保证数量限制"""
         individual = []
         for (rw, rh), count in rectangles.items():
             for _ in range(count):
@@ -29,11 +14,21 @@ def genetic_algorithm_max_rectangles(W, H, rectangles, max_generations=100, popu
 
     def fitness(individual):
         """计算适应度（放置的矩形数量）"""
+        #第一次版本以矩形数量为目标函数
+        #第二次版本目标以矩形面积利用率为目标
+        #后续或者是  加入面积利用率的权重或者优先考虑某些矩形类型
         placed = []
+        type_count = {rect: 0 for rect in rectangles}  # 记录每种矩形已放置的数量
+        total_area = 0
         for rect in individual:
-            if not is_overlapping(rect, placed) and is_within_bounds(rect):
-                placed.append(rect)
-        return len(placed), placed
+            if rect[2:4] in rectangles:  # 确保类型合法
+                if type_count[rect[2:4]] < rectangles[rect[2:4]]:  # 检查数量限制
+                    if not is_overlapping(rect, placed) and is_within_bounds(rect):
+                        placed.append(rect)
+                        type_count[rect[2:4]] += 1
+                        total_area += rect[2] * rect[3]  # 累加面积
+        utilization_rate = total_area / (W * H)  # 面积利用率
+        return utilization_rate, placed
 
     def is_overlapping(new_rect, placed_rects):
         """检查是否重叠"""
@@ -56,12 +51,24 @@ def genetic_algorithm_max_rectangles(W, H, rectangles, max_generations=100, popu
         return child1, child2
 
     def mutate(individual):
-        """变异操作"""
+        """变异操作，同时确保数量限制"""
+        type_count = {rect: 0 for rect in rectangles}  # 记录每种矩形已放置的数量
+        for i in range(len(individual)):
+            if individual[i][2:4] in rectangles:
+                type_count[individual[i][2:4]] += 1
+
         for i in range(len(individual)):
             if random.random() < mutation_rate:
-                x = random.randint(0, W - individual[i][2])
-                y = random.randint(0, H - individual[i][3])
-                individual[i] = (x, y, individual[i][2], individual[i][3])
+                original = individual[i]
+                rect_type = original[2:4]
+                if type_count[rect_type] > rectangles[rect_type]:  # 数量超出，移除
+                    individual[i] = None
+                    type_count[rect_type] -= 1
+                else:  # 随机生成新位置
+                    x = random.randint(0, W - rect_type[0])
+                    y = random.randint(0, H - rect_type[1])
+                    individual[i] = (x, y, rect_type[0], rect_type[1])
+        individual = [rect for rect in individual if rect is not None]  # 移除无效元素
         return individual
 
     # 初始化种群
