@@ -70,6 +70,8 @@ def max_rectangles(W, H, rectangles):
     W = int(W)
     H = int(H)
 
+    
+
     # 初始化 DP 表和方案记录
     dp = [[0] * (H + 1) for _ in range(W + 1)]
     placement = [[[] for _ in range(H + 1)] for _ in range(W + 1)]

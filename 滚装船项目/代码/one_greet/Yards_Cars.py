@@ -88,20 +88,22 @@ def Calculate_all_emission_scenarios(all_rectangles, yards):
         W = int(yard[0])  # 获取宽度并转换为整数
         H = int(yard[1])  # 获取高度并转换为整数
         results[key] = {}
-        print(f'''堆场：{key}，面积：{W} x {H}''')
+        # print(f'''堆场：{key}，面积：{W} x {H}''')
         for brand, cars_data in all_rectangles.items():  # 遍历品牌
-            print(f"  品牌: {brand}")
+            # print(f"  品牌: {brand}")
 
             for car, data in cars_data.items():  # 遍历每个品牌下的车型
                 width, length, count = data  # 获取宽度、长度和数量
                 rectangles = {(width, length): count}  # 转换为字典格式
+                
+                #调用装箱方法
                 max_count, placement_plan = max_rectangles(W, H, rectangles)
 
-                print(f"  车型: {car}")
-                print("    最大可放置数量：", max_count)
-                print("    放置方案：")
-                for x, y, rw, rh in placement_plan:
-                    print(f"      小矩形放置在位置 ({x}, {y})，尺寸为 {rw} x {rh}")
+                # print(f"  车型: {car}")
+                # print("    最大可放置数量：", max_count)
+                # print("    放置方案：")
+                # for x, y, rw, rh in placement_plan:
+                    # print(f"      小矩形放置在位置 ({x}, {y})，尺寸为 {rw} x {rh}")
 
                 if brand not in results[key]:
                     results[key][brand] = {}
