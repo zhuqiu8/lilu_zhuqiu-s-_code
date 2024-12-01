@@ -1,7 +1,7 @@
 import numpy as np
 from collections import defaultdict
 from Max_rectangles  import *
-
+from genetic_algorithm_max_area import *
 
 '''
 yards ：堆场面积集合
@@ -78,6 +78,7 @@ def all_brands_to_rectangles(brand_groups):
 #     return all_rectangles
 
 
+
 # 转换所有品牌车辆信息
 all_rectangles = all_brands_to_rectangles(brand_groups)
 
@@ -95,9 +96,11 @@ def Calculate_all_emission_scenarios(all_rectangles, yards):
             for car, data in cars_data.items():  # 遍历每个品牌下的车型
                 width, length, count = data  # 获取宽度、长度和数量
                 rectangles = {(width, length): count}  # 转换为字典格式
-                
+
                 #调用装箱方法
-                max_count, placement_plan = max_rectangles(W, H, rectangles)
+                # max_count, placement_plan = max_rectangles(W, H, rectangles)
+
+                max_count, placement_plan = genetic_algorithm_max_area(W, H, rectangles)
 
                 # print(f"  车型: {car}")
                 # print("    最大可放置数量：", max_count)
