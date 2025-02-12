@@ -1,0 +1,12 @@
+models_dict = {
+    0: "ELANTRA HEV",
+    1: "STARIA",
+    2: "KONA_HEV",  # "KONA
+    3: "SONATA_HEV",  # "SONATA
+    4: "VENUE",
+    5: "NIRO",
+    6: "SELTOS",
+    7: "PICANTO",
+    8: "STONIC",
+    9: "CARNIVAL",
+}

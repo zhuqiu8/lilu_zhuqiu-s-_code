@@ -1,0 +1,4 @@
+brands_dict = {
+    0: 'HYUNDAI',
+    1: 'KIA',
+}
