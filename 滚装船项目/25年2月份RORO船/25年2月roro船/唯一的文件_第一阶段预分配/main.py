@@ -6,7 +6,7 @@ from data.Input_Data.data_input_CarDATA import *
 from data.Input_Data.data_input_yard_areas import *
 
 # 调用函数
-excel_path = r"C:\Users\zhuqiu\Desktop\最后一搜船_整体\第二次模型的输入数据0.xlsx"  # 替换为实际的 Excel 文件路径
+excel_path = r"C:\Users\zhuqiu\Desktop\25年2月份RORO船\25年2月roro船\第二次模型的输入数据0.xlsx"  # 替换为实际的 Excel 文件路径
 
 output_file_models_dict = r"Output_Data\models_dict"  # 替换为实际的输出文件路径
 models_dict=generate_models_dict_from_excel(excel_path, "Models", output_file_models_dict)  #车型数据输入
@@ -58,7 +58,7 @@ u = model.addVars(range(num_yards), vtype=GRB.CONTINUOUS, name="u")  # 堆场利
 # lambda2 = 1  # 品牌分散权重
 # lambda3 = 0.5  # 控制车型集中权重
 model.setObjective(
-    # lambda1 * quicksum(u[i] for i in range(num_yards))
+    lambda1 * quicksum(u[i] for i in range(num_yards))
     -lambda2 * quicksum(y[i, j] for i in range(num_yards) for j in brands) -
     lambda3 * quicksum(z[i, k] for i in range(num_yards) for k in models),
     GRB.MAXIMIZE
@@ -191,7 +191,7 @@ if model.status == GRB.OPTIMAL:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    file_path = os.path.join(output_dir, '结果0.8.xlsx')  # 可以更改
+    file_path = os.path.join(output_dir, '结果0.9.xlsx')  # 可以更改
     with pd.ExcelWriter(file_path) as writer:
         grouped_results.to_excel(writer, sheet_name="总分配情况", index=False)
         detailed_model_results.to_excel(writer, sheet_name="车型分布详情", index=False)

@@ -1,7 +1,6 @@
 brands_dict = {
-    0: 'HYUNDAI',
-    1: 'KIA',
-    2: 'NANJING_GOLDEN_DRAGON',  # NANJING
-    3: 'SERES',
-    4: 'RENAULT',
+    0: 'BYD',
+    1: 'GEELY',
+    2: 'HIGER',
+    3: 'KIA',
 }

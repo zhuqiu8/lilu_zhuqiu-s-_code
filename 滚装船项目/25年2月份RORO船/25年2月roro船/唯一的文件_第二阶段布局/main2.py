@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import csv
 import time
 from Input_data.yard_bin_contract import *
-from 唯一的文件_第二阶段布局.function.ALL_Bin_Rectangle import *
+from function.ALL_Bin_Rectangle import *
 
 start_time = time.time()
 
@@ -210,8 +210,8 @@ class BinPacking:
 from Input_data.Bin_Sizes import get_bin_sizes
 
 if __name__ == "__main__":
-    initial_file_path = r"C:\Users\zhuqiu\Desktop\最后一搜船_整体\第二次模型的输入数据0.xlsx" # 初始 Excel 文件，包含堆场名称
-    output_file_path = r"C:\Users\zhuqiu\Desktop\最后一搜船_整体\唯一的文件_第一阶段预分配\第一阶段预分配\Result\结果0.9.xlsx"   # 输出的 Excel 文件，包含堆场数据
+    initial_file_path = r"C:\Users\zhuqiu\Desktop\25年2月份RORO船\25年2月roro船\第二次模型的输入数据0.xlsx" # 初始 Excel 文件，包含堆场名称
+    output_file_path = r"C:\Users\zhuqiu\Desktop\25年2月份RORO船\25年2月roro船\唯一的文件_第一阶段预分配\第一阶段预分配\Result\结果0.9.xlsx"   # 输出的 Excel 文件，包含堆场数据
     # 定义堆场尺寸和优先品牌
     # bin_sizes = [
     #     (9.2 ,200), #"Yard C1.1",
@@ -228,31 +228,22 @@ if __name__ == "__main__":
     #     # (32 , 450) #"R 3"
     # ]
 
-    bin_sizes = get_bin_sizes(path=r"C:\Users\zhuqiu\Desktop\最后一搜船_整体\第二次模型的输入数据0.xlsx", sheet_name="Yard_Areas",
+    bin_sizes = get_bin_sizes(path=r"C:\Users\zhuqiu\Desktop\25年2月份RORO船\25年2月roro船\第二次模型的输入数据0.xlsx", sheet_name="Yard_Areas",
                               length_column="Length", width_column="Width")
     print(bin_sizes)
     # yard_data = read_yard_data(output_file_path, sheet_name='车型分布详情')
     # print(yard_data)
     bin_priority_brands = [
-        ["KONA_HEV"],     #C1.1
-        ["CARNIVAL"],     #C1.2
-        ["STONIC"],     #C1.3
-        ["IONIQ6","SKYWELL","SERES  CODE 8703"],   #C1.4 东风
-        ["VENUE"],    #C1.5
-        ["ARKANA"],    #AA  奇瑞
-        ["KONA_HEV"],    #R2
-        ["KONA_HEV"],    #A8
-        ["STARIA"],    #R1
-        ["VENUE"],    #A7
-        ["IONIQ5"],     #A9
-        ["ELANTRA HEV","SONATA_HEV"],      #R3
-        ["NIRO","SELTOS"], #A4
-        [],  # F1
-        [],  # G1-1
-        [],  # G1-2
-        [],  # G1-3
-        ["ELANTRA HEV","PICANTO"],  # B3
-        ["STONIC","GENESIS"]  #B8
+        ["SEAL U"],     #C1.1
+        ["PICANTO"],     #C1.2
+        ["NIRO","SELTOS"],     #C1.3
+        ["SEAL U"],   #C1.4 东风
+        [ "G13","STONIC"],    #C1.5
+        ["NIRO","PICANTO"],    #R2
+        ["KLQ6125GEV3", "KLQ6182GEV ","STONIC"],    #R1
+        [ "STONIC"],    #A7
+        ["NIRO"],  # F1
+
     ]
 
     yard_names = read_yard_names(initial_file_path, sheet_name='Yard_Areas', column_name='yard_names')
@@ -266,23 +257,14 @@ if __name__ == "__main__":
     # 创建矩形（包含品牌信息）
     # 创建矩形（包含品牌信息）
     rectangles = (
-
-             [Rectangle(2.3, 5.5, id=i, brand="STARIA") for i in range(258)]
-            + [Rectangle(2.2, 4.5, id=i, brand="KONA_HEV") for i in range(802)]
-            + [Rectangle(2.3, 5.1, id=i, brand="SONATA_HEV") for i in range(368)]
-            + [Rectangle(2.2, 4.4, id=i, brand="VENUE") for i in range(888)]
-            + [Rectangle(2.3, 4.8, id=i, brand="GENESIS") for i in range(134)]
-            + [Rectangle(2.3, 5.0, id=i, brand="IONIQ5") for i in range(454)]
-            + [Rectangle(2.3, 5.0, id=i, brand="IONIQ6") for i in range(55)]
-            + [Rectangle(2.0, 4.6, id=i, brand="NIRO") for i in range(706)]
-            + [Rectangle(2.2, 4.7, id=i, brand="SELTOS") for i in range(390)]
-            + [Rectangle(1.9, 4.3, id=i, brand="PICANTO") for i in range(221)]
-            + [Rectangle(2.3, 4.5, id=i, brand="STONIC") for i in range(80)]
-            + [Rectangle(2.3, 5.5, id=i, brand="CARNIVAL") for i in range(138)]
-            + [Rectangle(2.3, 4.9, id=i, brand="SKYWELL") for i in range(56)]
-            + [Rectangle(2.3, 5.0, id=i, brand="SERES CODE 8703") for i in range(30)]
-            + [Rectangle(2.3, 4.9, id=i, brand="ARKANA") for i in range(22)]
-            +[Rectangle(2.2, 4.9, id=i, brand="ELANTRA HEV") for i in range(1379)]
+            [Rectangle(2, 4.9, id=i,  brand="SEAL U") for i in range(300)]
+            + [Rectangle(1.8, 4.7, id=i,brand="G13") for i in range(30)]
+            + [Rectangle(2.6, 13, id=i,  brand="KLQ6125GEV3") for i in range(15)]
+            + [Rectangle(2.6, 13, id=i,  brand="KLQ6182GEV") for i in range(35)]
+            + [Rectangle(2, 4.6, id=i,   brand="SELTOS") for i in range(228)]
+            + [Rectangle(1.9, 4.3, id=i, brand="PICANTO") for i in range(814)]
+            + [Rectangle(2.2, 4.7, id=i,  brand="NIRO") for i in range(600)]
+            + [Rectangle(2.3, 4.5, id=i,   brand="STONIC") for i in range(1107)]
     )
 
     # 按品牌分组
