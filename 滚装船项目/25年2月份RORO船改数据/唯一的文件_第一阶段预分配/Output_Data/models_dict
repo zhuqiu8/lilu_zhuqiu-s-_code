@@ -1,0 +1,10 @@
+models_dict = {
+    0: "SEAL U",
+    1: "G13",
+    2: "KLQ6125GEV3",
+    3: "KLQ6182GEV ",
+    4: "NIRO",
+    5: "PICANTO",
+    6: "SELTOS",
+    7: "STONIC",
+}

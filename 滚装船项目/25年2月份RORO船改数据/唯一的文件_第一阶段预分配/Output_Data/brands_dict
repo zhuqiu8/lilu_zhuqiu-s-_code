@@ -1,0 +1,6 @@
+brands_dict = {
+    0: 'BYD',
+    1: 'GEELY',
+    2: 'HIGER',
+    3: 'KIA',
+}
